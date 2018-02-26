@@ -67,7 +67,7 @@ class Assignment:
 
         print(f'Creating container {container_name} on {image_name} bound to {source_path}')
         container_sources = f'{source_path}/{self.name}'
-        container_command = ['./gradlew', 'build']
+        container_command = ['./gradlew', 'build', '-x', 'test']
         container_volumes = {container_sources: {'bind': f'/var/builds/{self.name}', 'mode': 'rw'}}
         container_working_dir = f'/var/builds/{self.name}'
         container = self.docker.containers.create(image, container_command, name=container_name,
