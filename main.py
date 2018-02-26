@@ -1,14 +1,10 @@
 import argparse
 import os
 
+import docker
 from github import Github
 
 from challenge.repository import ChallengeRepositoryGithub
-
-# import docker
-# client = docker.from_env()
-# container = client.containers.run("bfirsh/reticulate-splines", detach=True)
-# print(container.id)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Spaceship CI')
@@ -26,6 +22,8 @@ if __name__ == '__main__':
         os.makedirs(base_path)
 
     github = Github(os.environ['GITHUB_TOKEN'])
-    challenge_repository = ChallengeRepositoryGithub(github)
+    docker_client = docker.from_env()
+
+    challenge_repository = ChallengeRepositoryGithub(github, docker_client)
     challenge = challenge_repository.find_by_name_and_org(challenge_name, organization)
     challenge.run_pipeline(base_path)

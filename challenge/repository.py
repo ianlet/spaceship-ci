@@ -1,9 +1,11 @@
-from challenge import Challenge, Assignment
+from challenge import Challenge
+from challenge.assignment import Assignment
 
 
 class ChallengeRepositoryGithub:
-    def __init__(self, github):
+    def __init__(self, github, docker):
         self.github = github
+        self.docker = docker
 
     def find_by_name_and_org(self, name, organization):
         assignments = self.__find_assignments(name, organization)
@@ -17,5 +19,6 @@ class ChallengeRepositoryGithub:
         for repo in assignment_repos:
             assignment_name = repo.name.replace(f'{challenge_name}-', '')
             git_url = repo.git_url
-            assignments.append(Assignment(assignment_name, git_url))
+            assignment = Assignment(self.docker, assignment_name, git_url)
+            assignments.append(assignment)
         return assignments
