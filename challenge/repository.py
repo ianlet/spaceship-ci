@@ -18,7 +18,7 @@ class ChallengeRepositoryGithub:
         assignments = []
         for repo in assignment_repos:
             assignment_name = repo.name.replace(f'{challenge_name}-', '')
-            git_url = repo.git_url
+            git_url = repo.ssh_url
             assignment = Assignment(self.docker, assignment_name, git_url)
             assignments.append(assignment)
         return assignments
