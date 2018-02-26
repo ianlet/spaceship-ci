@@ -5,6 +5,9 @@ from git import Repo
 
 
 class Assignment:
+    ASSIGNMENT_IMAGE = 'gradle:4.5.1-jdk8'
+    ASSIGNMENT_PORT = 5000
+
     def __init__(self, docker, name, url):
         self.docker = docker
         self.name = name
@@ -58,17 +61,17 @@ class Assignment:
             return self.__create_container(container_name, container_command, source_path)
 
     def __create_container(self, container_name, container_command, source_path):
-        image_name = 'gradle:4.5.1-jdk8'
-        print(f'Pulling image {image_name}...')
-        image = self.docker.images.pull(image_name)
+        print(f'Pulling image {self.ASSIGNMENT_IMAGE}...')
+        image = self.docker.images.pull(self.ASSIGNMENT_IMAGE)
 
-        print(f'Creating container {container_name} on {image_name} bound to {source_path}')
+        print(f'Creating container {container_name} on {self.ASSIGNMENT_IMAGE}')
         container_sources = f'{source_path}/{self.name}'
         container_volumes = {container_sources: {'bind': f'/var/builds/{self.name}', 'mode': 'rw'}}
         container_working_dir = f'/var/builds/{self.name}'
         container = self.docker.containers.create(image, container_command, name=container_name,
                                                   stdin_open=True, tty=True, volumes=container_volumes,
-                                                  working_dir=container_working_dir)
+                                                  working_dir=container_working_dir,
+                                                  ports={'1357/tcp': self.ASSIGNMENT_PORT})
         print(f'Container {container.name} created!')
         return container
 
@@ -80,3 +83,15 @@ class Assignment:
         status = self.__start_container_and_wait(container)
         if not status['StatusCode'] == 0:
             raise Exception('Test failed')
+
+    def evaluate_progress(self, source_path):
+        print(f'Evaluating progress of assignment {self.name}...')
+        container_name = f'{self.name}--run'
+        container_command = ['./gradlew', 'run']
+        container = self.__create_or_get_container(container_name, container_command, source_path)
+        self.__ensure_started(container)
+        # retrieve the test cases and run them one by one to track the progress
+
+    def __ensure_started(self, container):
+        container.start()
+        # add a heartbeat in the boilerplate and ping it until it is up and running to ensure container is started

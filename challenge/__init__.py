@@ -30,6 +30,9 @@ class Challenge:
                 # TODO: Persist error for assignment
                 continue
 
+            assignment.evaluate_progress(challenge_path)
+            break
+
     def __ensure_exists(self, challenge_path):
         if not os.path.exists(challenge_path):
             os.makedirs(challenge_path)
