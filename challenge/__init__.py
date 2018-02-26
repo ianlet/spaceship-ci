@@ -23,6 +23,13 @@ class Challenge:
                 # TODO: Persist error for assignment
                 continue
 
+            try:
+                assignment.test(challenge_path)
+            except:
+                print(f'Assignment {assignment.name} test failed!')
+                # TODO: Persist error for assignment
+                continue
+
     def __ensure_exists(self, challenge_path):
         if not os.path.exists(challenge_path):
             os.makedirs(challenge_path)

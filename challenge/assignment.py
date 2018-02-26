@@ -71,3 +71,12 @@ class Assignment:
                                                   working_dir=container_working_dir)
         print(f'Container {container.name} created!')
         return container
+
+    def test(self, source_path):
+        print(f'Testing assignment {self.name}...')
+        container_name = f'{self.name}--test'
+        container_command = ['./gradlew', 'test']
+        container = self.__create_or_get_container(container_name, container_command, source_path)
+        status = self.__start_container_and_wait(container)
+        if not status['StatusCode'] == 0:
+            raise Exception('Test failed')
