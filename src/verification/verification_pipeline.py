@@ -1,7 +1,7 @@
-from challenge import TestStage
 from src.event_store.event_store_dummy import EventStoreDummy
 from .build_stage import BuildStage
 from .preparation_stage import PreparationStage
+from .test_stage import TestStage
 from .verification_stage import VerificationStageEvent, VerificationStageStatus, VerificationStageFailed
 
 

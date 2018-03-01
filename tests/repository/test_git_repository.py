@@ -6,7 +6,8 @@ import git
 from git import Repo
 from mockito import verify, patch, when
 
-from challenge import Submission, Challenge
+from challenge.challenge import Challenge
+from challenge.submission import Submission
 from repository import GitRepository
 
 

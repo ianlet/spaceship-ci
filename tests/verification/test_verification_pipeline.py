@@ -2,8 +2,10 @@ from unittest import TestCase
 
 from mockito import verify, mock, when
 
-from challenge import Submission, Challenge, VerificationPipeline
-from challenge.verification_stage import VerificationStageFailed, VerificationStageStatus, VerificationStageEvent
+from challenge.challenge import Challenge
+from challenge.submission import Submission
+from verification.verification_pipeline import VerificationPipeline
+from verification.verification_stage import VerificationStageFailed, VerificationStageStatus, VerificationStageEvent
 
 
 class TestVerificationPipeline(TestCase):

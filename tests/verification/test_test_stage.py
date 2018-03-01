@@ -2,7 +2,9 @@ from unittest import TestCase
 
 from mockito import mock, verify, when
 
-from challenge import Submission, Challenge, TestStage
+from challenge.challenge import Challenge
+from challenge.submission import Submission
+from verification.test_stage import TestStage
 
 
 class TestTestStage(TestCase):
