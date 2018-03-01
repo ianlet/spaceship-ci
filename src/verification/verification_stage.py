@@ -1,3 +1,4 @@
+import time
 from enum import Enum
 
 from src.utils import ValueObject
@@ -15,7 +16,10 @@ class VerificationStageStatus(Enum):
 
 
 class VerificationStageEvent(ValueObject):
-    __slots__ = 'stage', 'submission', 'status'
+    __slots__ = 'stage', 'submission', 'status', 'timestamp'
+
+    def __init__(self, *vals):
+        super().__init__(*vals, time.time())
 
 
 class VerificationStageFailed(Exception):

@@ -1,3 +1,4 @@
+import time
 from unittest import TestCase
 
 from mockito import verify, mock, when
@@ -9,6 +10,7 @@ from verification.verification_stage import VerificationStageFailed, Verificatio
 
 
 class TestVerificationPipeline(TestCase):
+    A_TIMESTAMP = 1
     A_STAGE_NAME = 'build'
     VERIFICATION_STAGE_STARTED = VerificationStageStatus.STARTED
     VERIFICATION_STAGE_SUCCEEDED = VerificationStageStatus.SUCCEEDED
@@ -17,14 +19,14 @@ class TestVerificationPipeline(TestCase):
     challenge = Challenge('org-name', 'challenge-name')
     submission = Submission('submission-01', 'submission-url', challenge)
 
-    verification_stage_started_event = VerificationStageEvent(A_STAGE_NAME, submission.name, VERIFICATION_STAGE_STARTED)
-    verification_stage_succeeded_event = VerificationStageEvent(A_STAGE_NAME, submission.name,
-                                                                VERIFICATION_STAGE_SUCCEEDED)
-    verification_stage_failed_event = VerificationStageEvent(A_STAGE_NAME, submission.name, VERIFICATION_STAGE_FAILED)
-
     def setUp(self):
-        self.failed_verification_stage = self.__setup_failed_verification_stage()
+        when(time).time().thenReturn(self.A_TIMESTAMP)
 
+        self.stage_started_event = self.__setup_verification_stage_event(self.VERIFICATION_STAGE_STARTED)
+        self.stage_succeeded_event = self.__setup_verification_stage_event(self.VERIFICATION_STAGE_SUCCEEDED)
+        self.stage_failed_event = self.__setup_verification_stage_event(self.VERIFICATION_STAGE_FAILED)
+
+        self.failed_verification_stage = self.__setup_failed_verification_stage()
         self.first_verification_stage = self.__setup_succeeded_verification_stage()
         self.second_verification_stage = self.__setup_succeeded_verification_stage()
 
@@ -44,14 +46,14 @@ class TestVerificationPipeline(TestCase):
 
         pipeline.verify(self.submission)
 
-        verify(self.event_store).store(self.verification_stage_started_event)
+        verify(self.event_store).store(self.stage_started_event)
 
     def test_store_verification_stage_succeeded_event(self):
         pipeline = VerificationPipeline(self.event_store, [self.first_verification_stage])
 
         pipeline.verify(self.submission)
 
-        verify(self.event_store).store(self.verification_stage_succeeded_event)
+        verify(self.event_store).store(self.stage_succeeded_event)
 
     def test_second_verification_stage_is_not_executed_given_first_verification_stage_failed(self):
         verification_stages = [self.failed_verification_stage, self.second_verification_stage]
@@ -66,7 +68,7 @@ class TestVerificationPipeline(TestCase):
 
         pipeline.verify(self.submission)
 
-        verify(self.event_store).store(self.verification_stage_failed_event)
+        verify(self.event_store).store(self.stage_failed_event)
 
     def __setup_succeeded_verification_stage(self):
         stage = mock({'name': self.A_STAGE_NAME})
@@ -76,3 +78,6 @@ class TestVerificationPipeline(TestCase):
         stage = mock({'name': self.A_STAGE_NAME})
         when(stage).execute(self.submission).thenRaise(VerificationStageFailed(stage))
         return stage
+
+    def __setup_verification_stage_event(self, event):
+        return VerificationStageEvent(self.A_STAGE_NAME, self.submission.name, event)
