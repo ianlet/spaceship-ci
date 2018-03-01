@@ -32,4 +32,4 @@ class TestEventStoreMongo(TestCase):
         event_document = {'stage': event.stage, 'status': event.status.value, 'submission': event.submission,
                           'timestamp': event.timestamp}
         persisted_event = self.database[EventStoreMongo.COLLECTION].find_one(event_document)
-        assert persisted_event is not None
+        self.assertIsNotNone(persisted_event)
