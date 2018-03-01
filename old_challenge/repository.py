@@ -1,5 +1,5 @@
-from challenge import Challenge
-from challenge.assignment import Assignment
+from old_challenge import Challenge
+from old_challenge.assignment import Assignment
 
 
 class ChallengeRepositoryGithub:

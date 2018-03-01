@@ -4,7 +4,6 @@ from utils import ValueObject
 
 
 class VerificationStage:
-
     def __init__(self, name):
         self.name = name
 
@@ -16,7 +15,7 @@ class VerificationStageStatus(Enum):
 
 
 class VerificationStageEvent(ValueObject):
-    __slots__ = 'stage', 'classwork', 'status'
+    __slots__ = 'stage', 'submission', 'status'
 
 
 class VerificationStageFailed(Exception):
