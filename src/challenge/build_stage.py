@@ -1,4 +1,4 @@
-from challenge import VerificationStage
+from .verification_stage import VerificationStage, VerificationStageFailed
 
 
 class BuildStage(VerificationStage):
@@ -12,5 +12,9 @@ class BuildStage(VerificationStage):
         container_command = ['./gradlew', 'build', '-x', 'test']
         submission_path = f'{self.base_path}/{submission.path}'
 
-        container = self.executor.create_container(submission.slug, container_name, container_command, submission_path)
-        container.run()
+        try:
+            container = self.executor.create_container(submission.slug, container_name, container_command,
+                                                       submission_path)
+            container.run()
+        except:
+            raise VerificationStageFailed(self)
