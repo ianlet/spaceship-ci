@@ -1,3 +1,4 @@
+from .build_stage import BuildStage
 from .challenge import Challenge
 from .challenge_verifier import ChallengeVerifier
 from .preparation_stage import PreparationStage
