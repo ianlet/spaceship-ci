@@ -37,14 +37,15 @@ if __name__ == '__main__':
         os.makedirs(base_path)
 
     docker_client = docker.from_env()
-    docker_executor = DockerExecutor(docker_client, 'gradle:4.5.1-jdk8', 1357, 5000)
+    docker_executor = DockerExecutor(docker_client, 'gradle:4.5.1-jdk8')
 
     github = Github(os.environ['GITHUB_TOKEN'])
     submission_repository = SubmissionRepositoryGithub(github)
 
     event_store = create_event_store()
     git_repository = GitRepository(base_path)
-    verification_pipeline_factory = VerificationPipelineFactory(event_store, git_repository, base_path, docker_executor)
+    verification_pipeline_factory = VerificationPipelineFactory(event_store, git_repository, base_path, docker_executor,
+                                                                'mongo')
 
     challenge_verifier = ChallengeVerifier(submission_repository, verification_pipeline_factory)
     challenge_verifier.verify_submissions(challenge)

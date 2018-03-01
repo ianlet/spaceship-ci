@@ -1,9 +1,10 @@
+from time import sleep
+
+
 class DockerExecutor:
-    def __init__(self, docker, docker_image, api_port, submission_port):
+    def __init__(self, docker, docker_image):
         self.docker = docker
         self.docker_image = docker_image
-        self.api_port = api_port
-        self.submission_port = submission_port
 
     def create_container(self, submission, container_name, container_command, container_sources):
         try:
@@ -12,11 +13,9 @@ class DockerExecutor:
             image = self.docker.images.pull(self.docker_image)
             container_dir = f'/var/builds/{submission}'
             container_volumes = {container_sources: {'bind': container_dir, 'mode': 'rw'}}
-            container_env = [f'API_PORT={self.api_port}']
             container = self.docker.containers.create(image, container_command, name=container_name,
                                                       stdin_open=True, tty=True, volumes=container_volumes,
-                                                      working_dir=container_dir, environment=container_env,
-                                                      ports={f'{self.api_port}/tcp': self.submission_port})
+                                                      working_dir=container_dir, links={'mongo': 'mongo'})
         return DockerContainer(container)
 
 
@@ -34,3 +33,13 @@ class DockerContainer:
         status = self.container.wait()
         if not status['StatusCode'] == 0:
             raise Exception('Build failed')
+
+    def start(self):
+        self.container.start()
+        while self.container.status != 'running':
+            self.container.reload()
+            sleep(0.1)
+
+    def stop(self):
+        self.container.stop()
+        self.container.wait()

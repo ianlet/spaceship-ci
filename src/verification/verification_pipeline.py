@@ -1,6 +1,7 @@
 from .build_stage import BuildStage
 from .preparation_stage import PreparationStage
 from .test_stage import TestStage
+from .track_progress_stage import TrackProgressStage
 from .verification_stage import VerificationStageEvent, VerificationStageStatus, VerificationStageFailed
 
 
@@ -27,16 +28,18 @@ class VerificationPipeline:
 
 
 class VerificationPipelineFactory:
-    def __init__(self, event_store, repository, base_path, executor):
+    def __init__(self, event_store, repository, base_path, executor, mongo_host):
         self.event_store = event_store
         self.base_path = base_path
         self.repository = repository
         self.executor = executor
+        self.mongo_host = mongo_host
 
     def create(self):
         stages = [
             PreparationStage(self.repository),
             BuildStage(self.base_path, self.executor),
-            TestStage(self.base_path, self.executor)
+            TestStage(self.base_path, self.executor),
+            TrackProgressStage(self.base_path, self.executor, self.mongo_host)
         ]
         return VerificationPipeline(self.event_store, stages)
