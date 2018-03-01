@@ -1,4 +1,4 @@
-from challenge import Submission
+from .submission import Submission
 
 
 class SubmissionRepositoryGithub:

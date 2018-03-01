@@ -1,6 +1,6 @@
 from enum import Enum
 
-from utils import ValueObject
+from src.utils import ValueObject
 
 
 class VerificationStage:
