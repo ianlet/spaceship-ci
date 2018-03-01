@@ -13,7 +13,10 @@ class TestChallengeVerifier(TestCase):
     verification_pipeline = mock()
 
     def setUp(self):
-        self.challenge_verifier = ChallengeVerifier(self.submission_repository, self.verification_pipeline)
+        verification_pipeline_factory = mock()
+        when(verification_pipeline_factory).create().thenReturn(self.verification_pipeline)
+
+        self.challenge_verifier = ChallengeVerifier(self.submission_repository, verification_pipeline_factory)
 
     def test_verification_pipeline_should_verify_each_submission(self):
         submissions = self.__given_submissions()
