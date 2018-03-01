@@ -13,7 +13,7 @@ class TestVerificationPipeline(TestCase):
     VERIFICATION_STAGE_FAILED = VerificationStageStatus.FAILED
 
     challenge = Challenge('org-name', 'challenge-name')
-    submission = Submission(challenge)
+    submission = Submission('submission-01', 'submission-url', challenge)
 
     verification_stage_started_event = VerificationStageEvent(A_STAGE_NAME, submission.name, VERIFICATION_STAGE_STARTED)
     verification_stage_succeeded_event = VerificationStageEvent(A_STAGE_NAME, submission.name,

@@ -2,8 +2,7 @@ from unittest import TestCase
 
 from mockito import mock, when, verify
 
-from challenge.challenge import Challenge
-from challenge.challenge_verifier import ChallengeVerifier
+from challenge import Challenge, ChallengeVerifier
 
 
 class TestChallengeVerifier(TestCase):

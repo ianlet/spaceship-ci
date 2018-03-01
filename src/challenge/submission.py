@@ -1,4 +1,9 @@
 class Submission:
-    def __init__(self, challenge):
-        self.name = f'{challenge.org}--{challenge.name}'
+    def __init__(self, name, url, challenge):
+        self.name = name
+        self.url = url
         self.challenge = challenge
+
+    @property
+    def path(self):
+        return f'{self.challenge.org}/{self.challenge.name}/{self.name}'
