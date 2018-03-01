@@ -1,5 +1,5 @@
 class EventStoreMongo:
-    COLLECTION = 'events'
+    COLLECTION = 'verification_stage_events'
 
     def __init__(self, database):
         self.database = database
