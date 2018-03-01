@@ -26,10 +26,10 @@ class TestEventStoreMongo(TestCase):
 
         self.event_store.store(event)
 
-        self.__assert_event_persisted(event)
+        self.__assert_event_stored(event)
 
-    def __assert_event_persisted(self, event):
+    def __assert_event_stored(self, event):
         event_document = {'stage': event.stage, 'status': event.status.value, 'submission': event.submission,
                           'timestamp': event.timestamp}
-        persisted_event = self.database[EventStoreMongo.COLLECTION].find_one(event_document)
-        self.assertIsNotNone(persisted_event)
+        stored_event = self.database[EventStoreMongo.COLLECTION].find_one(event_document)
+        self.assertIsNotNone(stored_event)
