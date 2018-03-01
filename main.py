@@ -4,7 +4,9 @@ import os
 import docker
 from github import Github
 
-from challenge.repository import ChallengeRepositoryGithub
+from src.challenge import ChallengeVerifier, SubmissionRepositoryGithub, VerificationPipelineFactory, Challenge
+from src.executor import DockerExecutor
+from src.repository import GitRepository
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Spaceship CI')
@@ -16,14 +18,20 @@ if __name__ == '__main__':
 
     organization = args.organization
     challenge_name = args.challenge
+    challenge = Challenge(organization, challenge_name)
     base_path = '/tmp/spaceship-ci'
 
     if not os.path.exists(base_path):
         os.makedirs(base_path)
 
-    github = Github(os.environ['GITHUB_TOKEN'])
     docker_client = docker.from_env()
+    docker_executor = DockerExecutor(docker_client, 'gradle:4.5.1-jdk8', 1357, 5000)
 
-    challenge_repository = ChallengeRepositoryGithub(github, docker_client)
-    challenge = challenge_repository.find_by_name_and_org(challenge_name, organization)
-    challenge.run_pipeline(base_path)
+    github = Github(os.environ['GITHUB_TOKEN'])
+    submission_repository = SubmissionRepositoryGithub(github)
+
+    git_repository = GitRepository(base_path)
+    verification_pipeline_factory = VerificationPipelineFactory(git_repository, base_path, docker_executor)
+
+    challenge_verifier = ChallengeVerifier(submission_repository, verification_pipeline_factory)
+    challenge_verifier.verify_submissions(challenge)
