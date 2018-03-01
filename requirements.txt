@@ -3,3 +3,4 @@ gitpython
 docker
 bottle
 mockito
+mongo

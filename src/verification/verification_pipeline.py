@@ -1,4 +1,3 @@
-from src.event_store.event_store_dummy import EventStoreDummy
 from .build_stage import BuildStage
 from .preparation_stage import PreparationStage
 from .test_stage import TestStage
@@ -28,7 +27,8 @@ class VerificationPipeline:
 
 
 class VerificationPipelineFactory:
-    def __init__(self, repository, base_path, executor):
+    def __init__(self, event_store, repository, base_path, executor):
+        self.event_store = event_store
         self.base_path = base_path
         self.repository = repository
         self.executor = executor
@@ -39,4 +39,4 @@ class VerificationPipelineFactory:
             BuildStage(self.base_path, self.executor),
             TestStage(self.base_path, self.executor)
         ]
-        return VerificationPipeline(EventStoreDummy(), stages)
+        return VerificationPipeline(self.event_store, stages)
