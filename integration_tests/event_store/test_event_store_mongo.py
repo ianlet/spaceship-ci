@@ -21,14 +21,14 @@ class TestEventStoreMongo(TestCase):
         self.mongo_client.drop_database(self.database)
         self.mongo_client.close()
 
-    def test_store_the_event(self):
+    def test_the_event_is_stored(self):
         event = VerificationStageEvent(self.A_STAGE, self.A_SUBMISSION, self.A_STATUS)
 
         self.event_store.store(event)
 
-        self.__assert_event_stored(event)
+        self.__assert_the_event_is_stored(event)
 
-    def __assert_event_stored(self, event):
+    def __assert_the_event_is_stored(self, event):
         event_document = {'stage': event.stage, 'status': event.status.value, 'submission': event.submission,
                           'timestamp': event.timestamp}
         stored_event = self.database[EventStoreMongo.COLLECTION].find_one(event_document)
