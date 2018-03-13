@@ -1,4 +1,4 @@
-import time
+from datetime import datetime
 from enum import Enum
 
 from src.utils import ValueObject
@@ -19,7 +19,7 @@ class VerificationStageEvent(ValueObject):
     __slots__ = 'stage', 'submission', 'status', 'timestamp'
 
     def __init__(self, *vals):
-        super().__init__(*vals, time.time())
+        super().__init__(*vals, datetime.now())
 
 
 class VerificationStageFailed(Exception):
