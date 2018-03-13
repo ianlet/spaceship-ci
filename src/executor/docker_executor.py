@@ -1,6 +1,3 @@
-from time import sleep
-
-
 class DockerExecutor:
     def __init__(self, docker, docker_image):
         self.docker = docker
@@ -33,13 +30,3 @@ class DockerContainer:
         status = self.container.wait()
         if not status['StatusCode'] == 0:
             raise Exception('Build failed')
-
-    def start(self):
-        self.container.start()
-        while self.container.status != 'running':
-            self.container.reload()
-            sleep(0.1)
-
-    def stop(self):
-        self.container.stop()
-        self.container.wait()
