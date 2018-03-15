@@ -1,3 +1,6 @@
+import sys
+import traceback
+
 from .verification_stage import VerificationStage, VerificationStageFailed
 
 
@@ -9,10 +12,13 @@ class TrackProgressStage(VerificationStage):
         self.mongo_host = mongo_host
 
     def execute(self, submission):
+        print("[TRACK PROGRESS STAGE] - Started for ", submission)
         try:
             container = self.__create_container(submission)
             container.run()
-        except:
+            print("[TRACK PROGRESS STAGE] - Done")
+        except Exception:
+            print("[TRACK PROGRESS STAGE] - Failed", traceback.format_exc())
             raise VerificationStageFailed(self)
 
     def __create_container(self, submission):

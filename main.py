@@ -31,7 +31,7 @@ if __name__ == '__main__':
     organization = args.organization
     challenge_name = args.challenge
     challenge = Challenge(organization, challenge_name)
-    base_path = '/tmp/spaceship-ci'
+    base_path = '/home/ian/tmp/spaceship-ci'
 
     if not os.path.exists(base_path):
         os.makedirs(base_path)
