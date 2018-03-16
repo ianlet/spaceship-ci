@@ -11,13 +11,13 @@ class VerificationPipeline:
         self.stages = stages
 
     def verify(self, submission):
-        print("Starting verification pipeline for ", submission)
+        print("Starting verification pipeline for", submission)
         try:
             self.__execute_verification_stages(submission)
-            print("Verification pipeline succeeded for ", submission)
+            print("Verification pipeline succeeded for", submission)
         except VerificationStageFailed as err:
             self.__store_event(submission, err.stage, VerificationStageStatus.FAILED)
-            print("Verification pipeline failed for ", submission)
+            print("Verification pipeline failed for", submission)
 
     def __execute_verification_stages(self, submission):
         for stage in self.stages:

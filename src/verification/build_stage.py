@@ -1,6 +1,3 @@
-import sys
-import traceback
-
 from .verification_stage import VerificationStage, VerificationStageFailed
 
 
@@ -11,16 +8,16 @@ class BuildStage(VerificationStage):
         self.executor = executor
 
     def execute(self, submission):
-        print("[BUILD STAGE] - Started for ", submission)
+        print(f'[BUILD STAGE] - {submission} - STARTED')
         container_name = f'{submission.slug}--{self.name}'
-        container_command = ['./gradlew', 'build', '-x', 'test']
+        container_command = ['./gradlew', 'build', '--refresh-dependencies', '-x', 'test']
         submission_path = f'{self.base_path}/{submission.path}'
 
         try:
             container = self.executor.create_container(submission.slug, container_name, container_command,
                                                        submission_path)
             container.run()
-            print("[BUILD STAGE] - Done")
-        except:
-            print("[BUILD STAGE] - Failed", traceback.format_exc())
+            print(f'[BUILD STAGE] - {submission} - DONE')
+        except Exception as err:
+            print(f'[BUILD STAGE] - {submission} - FAILED')
             raise VerificationStageFailed(self)

@@ -1,15 +1,15 @@
+import os
 import shutil
 from unittest import TestCase
 
-import os
-
 import docker
-from mockito import mock
+from mockito import mock, when
 
 from src.challenge.challenge import Challenge
 from src.challenge.submission import Submission
 from src.executor import DockerExecutor
 from src.repository import GitRepository
+from src.verification.challenge_verifier import ChallengeVerifier
 from src.verification.verification_pipeline import VerificationPipelineFactory
 
 
@@ -36,9 +36,14 @@ class TestManyProjects(TestCase):
         executor = DockerExecutor(docker_client, 'gradle:jdk8')
         pipeline_factory = VerificationPipelineFactory(event_store, repository, self.BASE_PATH, executor,
                                                        self.MONGO_HOST)
-        pipeline = pipeline_factory.create()
-
+        submissions = []
         for i in range(0, 30):
             submission_name = f'submission-{i}'
-            submission = Submission(submission_name, self.DUMMY_REPO, self.challenge)
-            pipeline.verify(submission)
+            submissions.append(Submission(submission_name, self.DUMMY_REPO, self.challenge))
+
+        submission_repository = mock()
+        when(submission_repository).find_by_challenge(self.challenge).thenReturn(submissions)
+
+        verifier = ChallengeVerifier(submission_repository, pipeline_factory)
+
+        verifier.verify_submissions(self.challenge)

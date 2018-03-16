@@ -13,20 +13,16 @@ class DockerExecutor:
             container = self.docker.containers.create(image, container_command, name=container_name,
                                                       stdin_open=True, tty=True, volumes=container_volumes,
                                                       working_dir=container_dir, links={'mongo': 'mongo'})
-        return DockerContainer(container)
+        return DockerContainer(container, container_name)
 
 
 class DockerContainer:
-    def __init__(self, container):
+    def __init__(self, container, container_name):
         self.container = container
+        self.container_name = container_name
 
     def run(self):
         self.container.start()
-        previous_line = ''
-        for line in self.container.attach(stream=True):
-            if not line == previous_line:
-                print(line.decode('utf-8'))
-            previous_line = line
         status = self.container.wait()
         if not status['StatusCode'] == 0:
-            raise Exception('Build failed')
+            raise Exception(f'{self.container_name} failed')
