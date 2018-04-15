@@ -1,5 +1,6 @@
 import argparse
 import os
+import shutil
 
 import docker
 from github import Github
@@ -25,13 +26,15 @@ if __name__ == '__main__':
     parser.add_argument('-o', '--organization', dest='organization',
                         help='Name of the organization hosting the challenges')
     parser.add_argument('-c', '--challenge', dest='challenge', help='Name of the challenge')
+    parser.add_argument('-d', '--directory', dest='directory', help='Where to temporarly store the submissions',
+                        default='./submissions')
 
     args = parser.parse_args()
 
+    base_path = args.directory
     organization = args.organization
     challenge_name = args.challenge
     challenge = Challenge(organization, challenge_name)
-    base_path = '/home/ian/tmp/spaceship-ci'
 
     if not os.path.exists(base_path):
         os.makedirs(base_path)
@@ -49,3 +52,5 @@ if __name__ == '__main__':
 
     challenge_verifier = ChallengeVerifier(submission_repository, verification_pipeline_factory)
     challenge_verifier.verify_submissions(challenge)
+
+    shutil.rmtree(base_path)
