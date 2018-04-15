@@ -7,4 +7,6 @@ class PreparationStage(VerificationStage):
         self.repository = repository
 
     def execute(self, submission):
+        print(f'[PREPARATION STAGE] - {submission} - STARTED')
         self.repository.clone(submission)
+        print(f'[PREPARATION STAGE] - {submission} - DONE')

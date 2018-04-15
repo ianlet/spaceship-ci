@@ -11,3 +11,8 @@ class Submission:
     @property
     def slug(self):
         return f'{self.challenge.org}--{self.challenge.name}-{self.name}'
+
+    def __str__(self) -> str:
+        return self.slug
+
+

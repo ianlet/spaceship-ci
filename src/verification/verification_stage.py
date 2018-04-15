@@ -19,7 +19,7 @@ class VerificationStageEvent(ValueObject):
     __slots__ = 'stage', 'submission', 'status', 'timestamp'
 
     def __init__(self, *vals):
-        super().__init__(*vals, datetime.now())
+        super().__init__(*vals, datetime.utcnow())
 
 
 class VerificationStageFailed(Exception):
